@@ -12,6 +12,9 @@ using System.Drawing;
 
 namespace PdfModificationx
 {
+    /// <summary>
+    /// Class for Writing to PDF file
+    /// </summary>
     public static class Write
     {
         static Int32 redWords = 0;

@@ -27,10 +27,8 @@ namespace PdfModificationx
 
         static int pageCounter;
 
-        //current font size of read text - Footnote
-        static decimal currentFontSize;
-        //current value of read text - Footnote
-        static int currentFootnoteValue;
+        static decimal currentFontSize; //current font size of read text - Footnote
+        static int currentFootnoteValue; //current value of read text - Footnote
 
         static int replaceCounter;
         static Dictionary<int, float> dictionary = new Dictionary<int, float>();
