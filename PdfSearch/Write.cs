@@ -10,9 +10,9 @@ using System.IO;
 using iTextSharp.text;
 using System.Drawing;
 
-namespace PDFWriteLib
+namespace PdfModification
 {
-    public static class PDFWriteClass
+    public static class Write
     {
         static Int32 redWords = 0;
         static Int32 pdfPages = 0;
@@ -22,6 +22,22 @@ namespace PDFWriteLib
             pdfPages = pdfReader.NumberOfPages;
             //redWords = 0;
         }
+        /// <summary>
+        /// Converting Pdf to PDF VERSION 1.7
+        /// </summary>
+        public static void PdfConversion(string path, string savePath)
+        {
+            PdfReader reader = new PdfReader(path);
+
+            PdfStamper stamper = new PdfStamper(reader, new FileStream(savePath , FileMode.Create), PdfWriter.VERSION_1_7);
+
+            stamper.FormFlattening = true;
+            List<int> pagesToReplace = new List<int>();
+
+         
+            stamper.Close();
+        }
+
         public static bool writeText(string originalPDFpath, string newPDFpath, string valueToWrite, int writeOnPage, string fontFamily, decimal fontSize, string fontColorHex, int coordinateX, int coordinateY)
         {
             bool res = false;

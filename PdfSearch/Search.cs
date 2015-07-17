@@ -5,22 +5,21 @@ using iTextSharp.text.pdf;
 using iTextSharp.text.pdf.parser;
 using System.Data;
 
-namespace PDFSearchLib
+namespace PdfModification
 {
-    public static class PdfSearchClass
+    /// <summary>
+    /// Class for Searching phrases in PDF files
+    /// </summary>
+    public static class Search
     {
         static String _prevDoubleText;
-        //previous y coordinate
-        static float _prevTopRight;
-        //sum of red words
-        static Int32 _redWords = 0;
-        //current PDF page that is being checked
-        static Int32 pdfPages = 0;
+
+        static float _prevTopRight; //previous y coordinate
+        static Int32 _redWords = 0; //sum of red words
+        static Int32 pdfPages = 0; //current PDF page that is being checked
         static Int32 _prevIcislo = 0;
-        //bad footnote found, return value to Program
-        static Boolean _badFootnoteFound = false;
-        //variable for executing BadFootnote function
-        static Boolean _doFootnoteCheck = false;
+        static Boolean _badFootnoteFound = false; //bad footnote found, return value to Program
+        static Boolean _doFootnoteCheck = false; //variable for executing BadFootnote function
 
         //Storage of each footnote number/y location on page/page
         static DataTable dt;
@@ -34,10 +33,9 @@ namespace PDFSearchLib
         static int currentFootnoteValue;
 
         static int replaceCounter;
-        static Dictionary<int, float> dictionary =
-    new Dictionary<int, float>();
+        static Dictionary<int, float> dictionary = new Dictionary<int, float>();
 
-        public static int searchPDF(string path)
+        public static int SearchFile(string path)
         {
             SetPDFPagesCount(path);
             _redWords = 0;
@@ -74,18 +72,18 @@ namespace PDFSearchLib
         /// <summary>
         /// This method looks for specific text in pdf. Returns true if found. False if not found.
         /// </summary>
-        public static bool searchPDF(string path, string searchText)
+        public static bool SearchFile(string path, string searchText)
         {
             SetPDFPagesCount(path);
             bool result = false;
-            result = FindTextInPdf(path, searchText);
+            result = FindText(path, searchText);
 
             return result;
         }
         /// <summary>
         /// This method looks for number of phrases with fontcolor RED and for text match. Returns string composed of phrases count and bool if text matched.
         /// </summary>
-        public static string searchPDF(string path, string searchText, bool getRedPhrasesCount)
+        public static string SearchFile(string path, string searchText, bool getRedPhrasesCount)
         {
             SetPDFPagesCount(path);
             _redWords = 0;
@@ -102,7 +100,7 @@ namespace PDFSearchLib
                 }
                 //Console.WriteLine(F);
                 rstring = rstring + _redWords.ToString();
-                bool IsMatched = searchPDF(path, searchText);
+                bool IsMatched = SearchFile(path, searchText);
                 if (IsMatched == false)
                 {
                     rstring = rstring + ". Match text NOT found.";
@@ -117,7 +115,7 @@ namespace PDFSearchLib
         }
 
 
-        private static bool FindTextInPdf(string path, string searchText)
+        private static bool FindText(string path, string searchText)
         {
             bool result = false;
             using (PdfReader reader = new PdfReader(path))
