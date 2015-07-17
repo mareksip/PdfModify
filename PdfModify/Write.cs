@@ -10,7 +10,7 @@ using System.IO;
 using iTextSharp.text;
 using System.Drawing;
 
-namespace PdfModification
+namespace PdfModificationx
 {
     public static class Write
     {

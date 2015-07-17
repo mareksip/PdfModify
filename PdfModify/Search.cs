@@ -5,7 +5,7 @@ using iTextSharp.text.pdf;
 using iTextSharp.text.pdf.parser;
 using System.Data;
 
-namespace PdfModification
+namespace PdfModificationx
 {
     /// <summary>
     /// Class for Searching phrases in PDF files
