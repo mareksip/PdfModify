@@ -41,7 +41,20 @@ namespace PdfModificationx
             stamper.Close();
         }
 
-        public static bool writeText(string originalPDFpath, string newPDFpath, string valueToWrite, int writeOnPage, string fontFamily, decimal fontSize, string fontColorHex, int coordinateX, int coordinateY)
+        /// <summary>
+        /// Writes text to PDF file on desired position and creates new PDF file.
+        /// </summary>
+        /// <param name="originalPDFpath"> Path to original PDF file. </param>
+        /// <param name="newPDFpath"> Path of PDF to be created. </param>
+        /// <param name="valueToWrite"> Text string to be written. </param>
+        /// <param name="writeOnPage"> Page of PDF. </param>
+        /// <param name="fontFamily"> Font family. </param>
+        /// <param name="fontSize"> Font size. </param>
+        /// <param name="fontColorHex"> Color of font. </param>
+        /// <param name="coordinateX"> X coordinate. </param>
+        /// <param name="coordinateY"> Y coordinate. </param>
+        /// <returns></returns>
+        public static bool WriteText(string originalPDFpath, string newPDFpath, string valueToWrite, int writeOnPage, string fontFamily, decimal fontSize, string fontColorHex, int coordinateX, int coordinateY)
         {
             bool res = false;
             SetPDFPagesCount(originalPDFpath);
@@ -78,11 +91,6 @@ namespace PdfModificationx
             Color color = System.Drawing.ColorTranslator.FromHtml(fontColorHex);
             BaseColor bs = new BaseColor(color);
             BaseFont bfTimes = BaseFont.CreateFont(BaseFont.HELVETICA, BaseFont.CP1250, false);
-            // select the font properties
-
-         
-
-            // create the new page and add it to the pdf
 
             for (int i = 1; i < pdfPages + 1; i++)
             {

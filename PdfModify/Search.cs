@@ -17,7 +17,7 @@ namespace PdfModificationx
         static float _prevTopRight; //previous y coordinate
         static Int32 _redWords = 0; //sum of red words
         static Int32 pdfPages = 0; //current PDF page that is being checked
-        static Int32 _prevIcislo = 0;
+        static Int32 _prevInumber = 0;
         static Boolean _badFootnoteFound = false; //bad footnote found, return value to Program
         static Boolean _doFootnoteCheck = false; //variable for executing BadFootnote function
 
@@ -33,6 +33,11 @@ namespace PdfModificationx
         static int replaceCounter;
         static Dictionary<int, float> dictionary = new Dictionary<int, float>();
 
+        /// <summary>
+        /// Searching for red words. FFFF0000
+        /// </summary>
+        /// <param name="path"> System path to PDF file. </param>
+        /// <returns>Count of red words. </returns>
         public static int SearchFile(string path)
         {
             SetPDFPagesCount(path);
@@ -48,6 +53,11 @@ namespace PdfModificationx
 
             return _redWords;
         }
+        /// <summary>
+        /// Detects wrong footnote numerical ordering.
+        /// </summary>
+        /// <param name="path"> System path to PDF file. </param>
+        /// <returns>Has wrong footnote order.</returns>
         public static bool BadFootnote(string path)
         {
             bool result = true;
@@ -61,6 +71,10 @@ namespace PdfModificationx
             result = _badFootnoteFound;
             return result;
         }
+        /// <summary>
+        /// Sets internally number of pages of current PDF.
+        /// </summary>
+        /// <param name="path">System path to PDF file.</param>
         private static void SetPDFPagesCount(string path)
         {
             PdfReader pdfReader = new PdfReader(path);
@@ -112,7 +126,12 @@ namespace PdfModificationx
             return "";
         }
 
-
+        /// <summary>
+        /// Searches for specific text within PDF.
+        /// </summary>
+        /// <param name="path"> System path to PDF file. </param>
+        /// <param name="searchText">Phrase to be found. </param>
+        /// <returns>Contains phrase.</returns>
         private static bool FindText(string path, string searchText)
         {
             bool result = false;
@@ -134,12 +153,15 @@ namespace PdfModificationx
             }
             return result;
         }
+        /// <summary>
+        /// Gets and checks footnote order.
+        /// </summary>
+        /// <param name="path"></param>
         private static void GetFootnote(string path)
         {
-
             currentFontSize = 0;
             currentFootnoteValue = 0;
-            _prevIcislo = 0;
+            _prevInumber = 0;
 
             _prevDoubleText = "";
             _prevTopRight = (float)0;
@@ -204,11 +226,14 @@ namespace PdfModificationx
             dt.Clear();
 
             prev = 0;
-            _prevIcislo = 0;
+            _prevInumber = 0;
             replaceCounter = 0;
 
         }
 
+        /// <summary>
+        /// Magic class for PDF Modification.
+        /// </summary>
         public class TextWithFontExtractionStategy : iTextSharp.text.pdf.parser.ITextExtractionStrategy
         {
             //HTML buffer
@@ -335,7 +360,7 @@ namespace PdfModificationx
                                 }
                             }
                         }
-                        _prevIcislo = currentFootnoteValue;
+                        _prevInumber = currentFootnoteValue;
 
                     }
 
