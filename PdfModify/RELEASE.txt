@@ -1,0 +1,5 @@
+﻿1.1. 
+- Updating method SearchFile(string path, string searchText, bool getRedPhrasesCount)
+- Permunations of red phrase (some red phrases get chunked if casing within word) to find phrase
+- Joining PdfWrite and PdfSearch into single library PdfModify
+- Renaming according to C# conventions

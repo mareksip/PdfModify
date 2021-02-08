@@ -19,23 +19,23 @@ namespace PDFSearch
 
             //bool res = PDFWriteClass.writeText(path, newFilePath, "SAMPLE NEW INPUT TEXT", 1,"",d,"#FF0000",660, 560);
 
-            string path = @"C:\Users\marek.ARR\Documents\Projekty\_freelancing\_software\vw391686vw\17-07-2015";
+            string path = @"C:\Users\marek.ARR\Documents\Projekty\_freelancing\_software\vw391686vw\pdfs\table-extraction";
             string[] filePaths = Directory.GetFiles(path, "*.pdf",
                                          SearchOption.TopDirectoryOnly);
+            string desiredPhrase = "noteExpRatFootnote";
 
             foreach (string st in filePaths)
             {
-                string searchText = "A_FundName";
 
-                PdfReader pdfReader = new PdfReader(st);
-                pdfPages = pdfReader.NumberOfPages;
+                //PdfReader pdfReader = new PdfReader(st);
+                //pdfPages = pdfReader.NumberOfPages;
 
-                //Console.WriteLine("Analyzing document: " + Path.GetFileName(st));
-                bool t = Search.SearchFile(st, searchText);
+                Console.WriteLine("Analyzing document: " + Path.GetFileName(st));
+                /*
+                bool t = Search.SearchFile(st, desiredPhrase);
                
                 if(t == true)
                 {
-                  
                     Console.WriteLine("Search text found: " + t.ToString());
                 }
                 int i = Search.SearchFile(st);
@@ -47,36 +47,25 @@ namespace PDFSearch
                     }
                     Console.WriteLine("Red text: " + i.ToString());
                 }
-                string s = Search.SearchFile(st, searchText, true);
-                if(t == true || i > 0)
-                { 
-                    Console.WriteLine("Result: " + s);
-                }
+                */
+
+                string s = Search.SearchFile(st, desiredPhrase, true);
+                Console.WriteLine("Result: " + s);
 
                 bool r = Search.BadFootnote(st);
                 if (r == true)
+                {
                     Console.WriteLine("Bad footnote: " + Path.GetFileName(st));
-                
-               
+                }
+
             }
             /*
             string path1 = @"C:\Users\marek\Documents\Projekty\freelancer\vw391686vw\pdf-conversions\Mavis-Tire-Supply-LLC-401k-Plan.pdf";
             string savePath = @"C:\Users\marek\Documents\Projekty\freelancer\vw391686vw\pdf-conversions\opt1.pdf";
             PDFWriteLib.PdfWrite.PdfConversion(path1, savePath);
             */
+
             Console.Read();
-            
         }
-
-
-        public static void writeOnLocation(int x, int y)
-        {
-
-        }
-
-        /// <summary>
-        /// This method looks for number of phrases with fontcolor RED in pdf. Returns number of matches.
-        /// </summary>
-
     }
 }

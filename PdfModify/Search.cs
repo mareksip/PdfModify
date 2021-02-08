@@ -4,6 +4,7 @@ using System.Text;
 using iTextSharp.text.pdf;
 using iTextSharp.text.pdf.parser;
 using System.Data;
+using PdfModify;
 
 namespace PdfModificationx
 {
@@ -16,7 +17,7 @@ namespace PdfModificationx
 
         static float _prevTopRight; //previous y coordinate
         static Int32 _redWords = 0; //sum of red words
-        static Int32 pdfPages = 0; //current PDF page that is being checked
+        private static Int32 PdfPages = 0; //current PDF file page count
         static Int32 _prevInumber = 0;
         static Boolean _badFootnoteFound = false; //bad footnote found, return value to Program
         static Boolean _doFootnoteCheck = false; //variable for executing BadFootnote function
@@ -33,8 +34,10 @@ namespace PdfModificationx
         static int replaceCounter;
         static Dictionary<int, float> dictionary = new Dictionary<int, float>();
 
+        static List<string> redWords = new List<string>();
+
         /// <summary>
-        /// Searching for red words. FFFF0000
+        /// Searching for red words hex FFFF0000. Note that some phrases might be cut into chunks, so number of red words might be higher than actual red phrases.
         /// </summary>
         /// <param name="path"> System path to PDF file. </param>
         /// <returns>Count of red words. </returns>
@@ -45,7 +48,7 @@ namespace PdfModificationx
 
             PdfReader reader = new PdfReader(path);
             TextWithFontExtractionStategy S = new TextWithFontExtractionStategy();
-            for (int i = 1; i < pdfPages + 1; i++)
+            for (int i = 1; i < PdfPages + 1; i++)
             {
                 //Console.WriteLine("Analyzing page: " + i.ToString());
                 string F = iTextSharp.text.pdf.parser.PdfTextExtractor.GetTextFromPage(reader, i, S);
@@ -64,8 +67,6 @@ namespace PdfModificationx
 
             _badFootnoteFound = false;
 
-            //Console.WriteLine(Path.GetFileName(path)); //vypsat prvě analyzovaný dokument
-
             GetFootnote(path);
 
             result = _badFootnoteFound;
@@ -78,52 +79,56 @@ namespace PdfModificationx
         private static void SetPDFPagesCount(string path)
         {
             PdfReader pdfReader = new PdfReader(path);
-            pdfPages = pdfReader.NumberOfPages;
+            PdfPages = pdfReader.NumberOfPages;
 
         }
         /// <summary>
-        /// This method looks for specific text in pdf. Returns true if found. False if not found.
+        /// Looks for specific text in pdf. Returns true if found. False if not found.
         /// </summary>
         public static bool SearchFile(string path, string searchText)
         {
             SetPDFPagesCount(path);
             bool result = false;
             result = FindText(path, searchText);
-
             return result;
         }
         /// <summary>
-        /// This method looks for number of phrases with fontcolor RED and for text match. Returns string composed of phrases count and bool if text matched.
+        /// Looks for number of phrases with fontcolor RED and for text match. Returns string composed of phrases count and bool if text matched.
         /// </summary>
         public static string SearchFile(string path, string searchText, bool getRedPhrasesCount)
         {
-            SetPDFPagesCount(path);
+            SetPDFPagesCount(path); //set internally how many pages should be looped
+
             _redWords = 0;
+            string rstring = "";
             if (getRedPhrasesCount == true)
             {
-                string rstring = "Number of red phrases: ";
+                rstring += "Number of red phrases: ";
 
                 PdfReader reader = new PdfReader(path);
                 TextWithFontExtractionStategy S = new TextWithFontExtractionStategy();
-                for (int i = 1; i < pdfPages + 1; i++)
+                for (int i = 1; i < PdfPages + 1; i++)
                 {
                     //Console.WriteLine("Analyzing page: " + i.ToString());
                     string F = iTextSharp.text.pdf.parser.PdfTextExtractor.GetTextFromPage(reader, i, S);
                 }
                 //Console.WriteLine(F);
                 rstring = rstring + _redWords.ToString();
-                bool IsMatched = SearchFile(path, searchText);
-                if (IsMatched == false)
-                {
-                    rstring = rstring + ". Match text NOT found.";
-                }
-                else
-                {
-                    rstring = rstring + ". Match text found.";
-                }
-                return rstring;
+
+                rstring += ". ";
             }
-            return "";
+            bool IsMatched = SearchFile(path, searchText);
+
+            if (IsMatched == false)
+            {
+                rstring += "Match text NOT found.";
+            }
+            else
+            {
+                rstring +="Match text found.";
+            }
+
+            return rstring;
         }
 
         /// <summary>
@@ -141,7 +146,6 @@ namespace PdfModificationx
 
                 for (int i = 1; i <= reader.NumberOfPages; i++)
                 {
-
                     text.Append(PdfTextExtractor.GetTextFromPage(reader, i));
                 }
 
@@ -149,7 +153,6 @@ namespace PdfModificationx
                 {
                     result = true;
                 }
-
             }
             return result;
         }
@@ -182,7 +185,7 @@ namespace PdfModificationx
             dt.Rows.Clear();
             dictionary.Clear();
             //Console.WriteLine("Doc START");
-            for (int i = 1; i < pdfPages + 1; i++)
+            for (int i = 1; i < PdfPages + 1; i++)
             {
 
                 pageCounter = i;
@@ -256,8 +259,6 @@ namespace PdfModificationx
                 FillThenStrokeTextAndAddToPathForClipping = 6,
                 AddTextToPaddForClipping = 7
             }
-
-
 
             public void RenderText(iTextSharp.text.pdf.parser.TextRenderInfo renderInfo)
             {
@@ -372,10 +373,12 @@ namespace PdfModificationx
                     string s = renderInfo.GetText();
                     if (string.IsNullOrWhiteSpace(s))
                     {
-                        //Console.WriteLine(s);
+                        
                     }
                     else
                     {
+                        //Console.WriteLine(s);
+                        redWords.Add(s);
                         _redWords++;
                     }
                 }
